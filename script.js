@@ -188,38 +188,77 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function buildFolderTree() {
-        const rootElement = folderTree.querySelector('.folder-item');
-        rootElement.innerHTML = `
-            <i class="fas fa-folder"></i>
-            <span>My Files</span>
-            <button class="add-folder-btn"><i class="fas fa-plus"></i></button>
-        `;
+    const rootElement = folderTree.querySelector('.folder-item');
+    rootElement.innerHTML = `
+        <i class="fas fa-folder"></i>
+        <span>My Files</span>
+        <button class="add-folder-btn"><i class="fas fa-plus"></i></button>
+    `;
 
-        rootElement.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('add-folder-btn')) {
-                loadDirectory('files');
-            }
-        });
+    rootElement.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('add-folder-btn')) {
+            loadDirectory('files');
+        }
+    });
 
-        rootElement.querySelector('.add-folder-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            showNewFolderModal('files');
-        });
+    rootElement.querySelector('.add-folder-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        showNewFolderModal('files');
+    });
 
-        const existingLists = folderTree.querySelectorAll('ul ul');
-        existingLists.forEach(list => list.remove());
+    // Clear existing tree
+    const existingLists = folderTree.querySelectorAll('ul ul');
+    existingLists.forEach(list => list.remove());
 
-        const transaction = db.transaction(['fileSystem'], 'readonly');
-        const store = transaction.objectStore('fileSystem');
-        const request = store.getAll();
+    // Build the complete tree structure
+    const transaction = db.transaction(['fileSystem'], 'readonly');
+    const store = transaction.objectStore('fileSystem');
+    const request = store.getAll();
 
-        request.onsuccess = (e) => {
-            const items = e.target.result;
-            const rootUl = document.createElement('ul');
-            buildFolderTreeRecursive(items, rootUl, 'files');
-            rootElement.appendChild(rootUl);
+    request.onsuccess = (e) => {
+        const allItems = e.target.result;
+        const rootUl = document.createElement('ul');
+        
+        // Build tree recursively starting from root
+        const buildTree = (parentElement, parentPath) => {
+            const children = allItems.filter(item => 
+                item.parentPath === parentPath && item.type === 'folder'
+            );
+            
+            children.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'folder-item';
+                li.dataset.path = item.path;
+                
+                li.innerHTML = `
+                    <i class="fas fa-folder"></i>
+                    <span>${item.name}</span>
+                    <button class="add-folder-btn"><i class="fas fa-plus"></i></button>
+                `;
+                
+                li.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('add-folder-btn')) {
+                        loadDirectory(item.path);
+                    }
+                });
+                
+                li.querySelector('.add-folder-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showNewFolderModal(item.path);
+                });
+                
+                const subUl = document.createElement('ul');
+                buildTree(subUl, item.path);
+                li.appendChild(subUl);
+                
+                parentElement.appendChild(li);
+            });
         };
-    }
+        
+        buildTree(rootUl, 'files');
+        rootElement.appendChild(rootUl);
+    };
+}
 
     function buildFolderTreeRecursive(items, parentUl, parentPath) {
         const children = items.filter(item => item.parentPath === parentPath && item.type === 'folder');
@@ -266,47 +305,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function createNewFolder() {
-        const folderName = newFolderNameInput.value.trim();
-        if (!folderName) return;
+    const folderName = newFolderNameInput.value.trim();
+    if (!folderName) return;
 
-        const parentPath = newFolderModal.dataset.parentPath;
-        const folderPath = `${parentPath}/${folderName}`;
+    const parentPath = newFolderModal.dataset.parentPath;
+    const folderPath = `${parentPath}/${folderName}`;
 
-        const transaction = db.transaction(['fileSystem'], 'readwrite');
-        const store = transaction.objectStore('fileSystem');
+    const transaction = db.transaction(['fileSystem'], 'readwrite');
+    const store = transaction.objectStore('fileSystem');
 
-        // Check if folder already exists
-        const checkRequest = store.get(folderPath);
+    // Check if folder already exists
+    const checkRequest = store.get(folderPath);
 
-        checkRequest.onsuccess = (e) => {
-            if (e.target.result) {
-                alert('A folder with this name already exists!');
-                return;
-            }
+    checkRequest.onsuccess = (e) => {
+        if (e.target.result) {
+            alert('A folder with this name already exists!');
+            return;
+        }
 
-            const newFolder = {
-                path: folderPath,
-                name: folderName,
-                type: 'folder',
-                parentPath: parentPath,
-                created: new Date(),
-                modified: new Date()
-            };
-
-            const putRequest = store.put(newFolder);
-
-            putRequest.onsuccess = () => {
-                loadDirectory(currentPath);
-                buildFolderTree();
-                hideNewFolderModal();
-            };
-
-            putRequest.onerror = (e) => {
-                console.error('Error creating folder:', e.target.error);
-                alert('Failed to create folder');
-            };
+        const newFolder = {
+            path: folderPath,
+            name: folderName,
+            type: 'folder',
+            parentPath: parentPath,
+            created: new Date(),
+            modified: new Date()
         };
-    }
+
+        const putRequest = store.put(newFolder);
+
+        putRequest.onsuccess = () => {
+            loadDirectory(currentPath);
+            buildFolderTree(); // Add this line to rebuild the tree
+            hideNewFolderModal();
+        };
+
+        putRequest.onerror = (e) => {
+            console.error('Error creating folder:', e.target.error);
+            alert('Failed to create folder');
+        };
+    };
+}
 
     function handleFileUpload(event) {
         const files = event.target.files;
