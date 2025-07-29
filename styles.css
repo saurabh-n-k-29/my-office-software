@@ -1,0 +1,328 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    touch-action: manipulation;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #34495e;
+    border-radius: 5px;
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+.search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 5px;
+    outline: none;
+}
+
+.folder-tree ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+.folder-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 2px;
+}
+
+.folder-item:hover {
+    background: #34495e;
+}
+
+.folder-item i {
+    margin-right: 8px;
+}
+
+.folder-item span {
+    flex: 1;
+}
+
+.add-folder-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 2px 5px;
+    opacity: 0.7;
+}
+
+.add-folder-btn:hover {
+    opacity: 1;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.toolbar {
+    padding: 10px 15px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.toolbar button {
+    padding: 8px 12px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.toolbar button:hover {
+    background: #2980b9;
+}
+
+.path-navigation {
+    flex: 1;
+    padding: 8px;
+    color: #7f8c8d;
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.file-grid {
+    flex: 1;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    overflow-y: auto;
+    touch-action: pan-y;
+}
+
+.file-item, .folder-item-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    word-break: break-word;
+}
+
+.file-item:hover, .folder-item-grid:hover {
+    background: #f0f0f0;
+}
+
+.file-icon, .folder-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+.folder-icon {
+    color: #f39c12;
+}
+
+.file-icon {
+    color: #3498db;
+}
+
+/* Context Menu */
+.context-menu {
+    position: fixed;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    z-index: 1000;
+    display: none;
+    min-width: 180px;
+}
+
+.context-menu ul {
+    list-style: none;
+}
+
+.context-menu li {
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.context-menu li:hover {
+    background: #f5f5f5;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal h3 {
+    margin-bottom: 15px;
+}
+
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#cancel-new-folder {
+    background: #e74c3c;
+    color: white;
+}
+
+#create-new-folder {
+    background: #2ecc71;
+    color: white;
+}
+
+/* File Preview Modal */
+.preview-content {
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+}
+
+.close-preview {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#preview-container {
+    margin-top: 20px;
+}
+
+#preview-container img {
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+/* Mobile & Tablet Styles */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+    }
+
+    .file-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .toolbar button {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .folder-item, .file-item, .folder-item-grid {
+        padding: 8px;
+    }
+
+    .file-icon, .folder-icon {
+        font-size: 32px;
+    }
+
+    .context-menu {
+        min-width: 160px;
+    }
+
+    .context-menu li {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+/* Touch Enhancements */
+button, .file-item, .folder-item-grid {
+    min-height: 44px; /* Minimum touch target size */
+    -webkit-tap-highlight-color: transparent;
+}

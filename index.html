@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- <link rel="manifest" href="manifest.json"> -->
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="search-box">
+                <input type="text" id="global-search" placeholder="Search files...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="folder-tree" id="folder-tree">
+                <ul>
+                    <li class="folder-item" data-path="files">
+                        <i class="fas fa-folder"></i>
+                        <span>My Files</span>
+                        <button class="add-folder-btn"><i class="fas fa-plus"></i></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="toolbar">
+                <button id="new-folder"><i class="fas fa-folder-plus"></i> New Folder</button>
+                <button id="upload-files"><i class="fas fa-file-upload"></i> Upload</button>
+                <div class="path-navigation" id="current-path">files/</div>
+            </div>
+
+            <div class="file-grid" id="file-grid">
+                <!-- Files & folders appear here -->
+            </div>
+        </div>
+
+        <!-- Context Menu (Right-Click / Long Press) -->
+        <div class="context-menu" id="context-menu">
+            <ul>
+                <li id="menu-open"><i class="fas fa-folder-open"></i> Open</li>
+                <li id="menu-rename"><i class="fas fa-edit"></i> Rename</li>
+                <li id="menu-cut"><i class="fas fa-cut"></i> Cut</li>
+                <li id="menu-copy"><i class="fas fa-copy"></i> Copy</li>
+                <li id="menu-paste"><i class="fas fa-paste"></i> Paste</li>
+                <li id="menu-delete"><i class="fas fa-trash"></i> Delete</li>
+                <li id="menu-download"><i class="fas fa-download"></i> Download</li>
+            </ul>
+        </div>
+
+        <!-- New Folder Modal -->
+        <div class="modal" id="new-folder-modal">
+            <div class="modal-content">
+                <h3>New Folder</h3>
+                <input type="text" id="new-folder-name" placeholder="Folder Name">
+                <div class="modal-buttons">
+                    <button id="cancel-new-folder">Cancel</button>
+                    <button id="create-new-folder">Create</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Preview Modal -->
+        <div class="modal" id="file-preview-modal">
+            <div class="modal-content preview-content">
+                <span class="close-preview">&times;</span>
+                <div id="preview-container"></div>
+            </div>
+        </div>
+
+        <!-- Hidden File Input -->
+        <input type="file" id="file-upload-input" multiple style="display: none;">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
